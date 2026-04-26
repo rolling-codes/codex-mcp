@@ -1,6 +1,21 @@
 import { compress } from "./optimizer.js";
 
-export function buildCtx(context?: string, prior?: string | null): string {
-  const parts = [context, prior ? `Prior: ${prior}` : ""].filter(Boolean) as string[];
-  return compress(parts.join(" | "));
+export interface RunContext {
+  task: string;
+  ctx: string;
+  plan: string;
+  code: string;
+  testResult: string;
+  attempts: number;
+}
+
+export function buildContext(task: string, context?: string): RunContext {
+  return {
+    task: compress(task),
+    ctx: compress(context ?? ""),
+    plan: "",
+    code: "",
+    testResult: "",
+    attempts: 0,
+  };
 }

@@ -12,26 +12,31 @@ function loadEnv(): Record<string, string> {
     readFileSync(ENV_FILE, "utf8")
       .split("\n")
       .filter((l) => l.includes("=") && !l.startsWith("#"))
-      .map((l) => {
-        const idx = l.indexOf("=");
-        return [l.slice(0, idx).trim(), l.slice(idx + 1).trim()] as [string, string];
-      })
+      .map((l) => l.split("=").map((s) => s.trim()) as [string, string])
   );
 }
 
 function writeClaudeConfig(): void {
-  if (!existsSync(DIST)) {
-    console.error("dist/index.js not found — run: npm run build");
+  const env = loadEnv();
+  const apiKey = env.ANTHROPIC_API_KEY ?? process.env.ANTHROPIC_API_KEY ?? "";
+  const ghostMode = env.GHOST_MODE ?? "false";
+
+  if (!apiKey) {
+    console.error("ERROR: ANTHROPIC_API_KEY not set. Add it to .env or environment.");
     process.exit(1);
   }
 
-  const env = loadEnv();
-  const ghostMode = env["GHOST_MODE"] ?? "false";
-
-  const mcpEntry = {
-    command: "node",
-    args: [DIST],
-    env: { GHOST_MODE: ghostMode },
+  const config = {
+    mcpServers: {
+      "codex-mcp": {
+        command: "node",
+        args: [DIST],
+        env: {
+          ANTHROPIC_API_KEY: apiKey,
+          GHOST_MODE: ghostMode,
+        },
+      },
+    },
   };
 
   const targets = [
@@ -46,21 +51,19 @@ function writeClaudeConfig(): void {
     let existing: Record<string, unknown> = {};
     if (existsSync(target)) {
       try {
-        existing = JSON.parse(readFileSync(target, "utf8")) as Record<string, unknown>;
-      } catch {
-        // ignore malformed JSON
-      }
+        existing = JSON.parse(readFileSync(target, "utf8"));
+      } catch {}
     }
 
     const merged = {
       ...existing,
       mcpServers: {
-        ...(existing["mcpServers"] as Record<string, unknown> | undefined),
-        "codex-mcp": mcpEntry,
+        ...(existing.mcpServers as object | undefined),
+        ...config.mcpServers,
       },
     };
 
-    writeFileSync(target, JSON.stringify(merged, null, 2) + "\n");
+    writeFileSync(target, JSON.stringify(merged, null, 2));
     console.log(`wrote: ${target}`);
   }
 }
