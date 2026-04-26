@@ -1,98 +1,61 @@
 # codex-mcp
 
-Multi-agent code execution as a Claude Code MCP plugin. Uses your existing Claude Code session — **no separate API key required**.
+A local service for automated code execution and validation.
 
-## Quick install
+## Quick start
 
 ```bash
-git clone https://github.com/rolling-codes/codex-mcp.git
-cd codex-mcp
+# 1. install
 npm install
-npm run build
-npm run enable
+
+# 2. configure
+cp .env.example .env
+# edit .env — set ANTHROPIC_API_KEY
+
+# 3. build + auto-register with Claude Code
+npm run setup
 ```
 
-Restart Claude Code. `codex-mcp` now appears in your MCP plugin list.
+`npm run setup` builds the project and writes the MCP server config into both:
+- `<repo>/.claude/mcp.json` (project-scoped)
+- `~/.claude/mcp.json` (global)
 
-## Commands
-
-| Command | Action |
-|---------|--------|
-| `npm run build` | Compile TS → `dist/` |
-| `npm run enable` | Register plugin globally via `claude mcp add -s user` |
-| `npm run disable` | Unregister via `claude mcp remove codex-mcp -s user` |
-| `npm run setup` | Alternative: write `mcp.json` directly (project + global) |
-| `npm run dev` | Run server with `tsx` (no build) |
+Restart Claude Code to activate.
 
 ## Environment
 
-| Var | Default | Description |
-|-----|---------|-------------|
-| `GHOST_MODE` | `false` | Sanitize output — replaces internal terms (planner, coder, etc.) with neutral labels |
+| Var | Required | Default | Description |
+|-----|----------|---------|-------------|
+| `ANTHROPIC_API_KEY` | yes | — | Anthropic API key |
+| `GHOST_MODE` | no | `false` | Suppress internal refs in output |
 
-Set in `.env` before `npm run setup`, or pass at enable time:
-```bash
-GHOST_MODE=true npm run enable
-```
-
-## Tools exposed
-
-### `run_codex_task`
-Returns pipeline instructions for Claude Code to execute (plan → code → test → heal).
+## Tool: `run_codex_task`
 
 **Input:**
 ```json
 { "task": "string", "context": "string (optional)" }
 ```
 
-**Output:** Pipeline prompt text. Claude Code executes phases internally then calls `submit_codex_result`.
-
-### `submit_codex_result`
-Validates, sanitizes, and stores the final result.
-
-**Input:**
-```json
-{
-  "task": "string",
-  "result": "string (final code)",
-  "tests": "string (must start with PASS or FAIL)",
-  "summary": "string (≤1000 chars)"
-}
-```
-
-**Output:**
+**Output (only if validation passes):**
 ```json
 { "result": "string", "tests": "string", "summary": "string" }
 ```
 
-Rejects submissions where `tests` doesn't start with `PASS` or `FAIL`.
+Output is blocked if automated validation fails. Invalid inputs are rejected at the boundary.
 
-## Pipeline
-
-```
-PLANNER → CODER → TESTER → [HEALER → CODER → TESTER] → submit_codex_result
-```
-
-Healer runs once on FAIL. Second FAIL returns error.
-
-## Memory
-
-LRU-20 in-process recall. `submit_codex_result` stores `(task, summary)`; subsequent `run_codex_task` calls inject prior summary as context for related tasks.
-
-## Manual MCP config
-
-If you don't want to use `npm run enable`:
+## Manual MCP config (if needed)
 
 ```json
 {
   "mcpServers": {
     "codex-mcp": {
       "command": "node",
-      "args": ["/absolute/path/to/codex-mcp/dist/index.js"],
-      "env": { "GHOST_MODE": "false" }
+      "args": ["/absolute/path/to/dist/index.js"],
+      "env": {
+        "ANTHROPIC_API_KEY": "...",
+        "GHOST_MODE": "false"
+      }
     }
   }
 }
 ```
-
-Place in `~/.claude/mcp.json` (global) or `<project>/.claude/mcp.json` (per-project).

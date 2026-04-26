@@ -1,7 +1,7 @@
 {
   "name": "codex-mcp",
-  "version": "2.0.0",
-  "description": "Claude Code MCP plugin — multi-agent code execution using your existing Claude session. No separate API key required.",
+  "version": "1.0.0",
+  "description": "Local MCP server for automated code execution and validation.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -11,23 +11,20 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "test": "node --import tsx --test tests/*.test.ts",
-    "typecheck": "tsc",
+    "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "setup": "npm run build && tsx scripts/setup.ts",
-    "enable": "npm run build && tsx scripts/enable.ts",
-    "disable": "claude mcp remove codex-mcp -s user",
+    "setup": "npm run build && node_modules/.bin/tsx scripts/setup.ts",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "claude", "claude-code", "codex", "ai", "code-generation"],
+  "keywords": ["mcp", "claude", "codex", "ai", "code-generation"],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rolling-codes/codex-mcp"
+    "url": "https://github.com/YOUR_USERNAME/codex-mcp"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.10.2",
     "zod": "^3.23.8"
   },
