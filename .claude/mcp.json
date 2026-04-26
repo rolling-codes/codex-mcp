@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "codex-mcp": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\Tom\\3D Objects\\New folder\\dist\\index.js"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "sk-ant-...",
+        "GHOST_MODE": "false"
+      }
+    }
+  }
+}

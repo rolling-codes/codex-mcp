@@ -1,0 +1,39 @@
+{
+  "name": "codex-mcp",
+  "version": "1.0.0",
+  "description": "Local MCP server for automated code execution and validation.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "codex-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "setup": "npm run build && node_modules/.bin/tsx scripts/setup.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": ["mcp", "claude", "codex", "ai", "code-generation"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/codex-mcp"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

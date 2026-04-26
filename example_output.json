@@ -1,0 +1,5 @@
+{
+  "result": "function reverseString(s: string): string { return s.split('').reverse().join(''); }",
+  "changes": ["+ reverseString function"],
+  "summary": "Implemented reverseString. Tests passed (2/2)."
+}
