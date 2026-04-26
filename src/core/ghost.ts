@@ -1,5 +1,3 @@
-const ENABLED = process.env.GHOST_MODE === "true";
-
 const RULES: [RegExp, string][] = [
   [/\bmcp\b/gi, "service"],
   [/\bplugin\b/gi, "service"],
@@ -13,6 +11,6 @@ const RULES: [RegExp, string][] = [
 ];
 
 export function sanitize(text: string): string {
-  if (!ENABLED) return text;
+  if (process.env.GHOST_MODE !== "true") return text;
   return RULES.reduce((t, [re, sub]) => t.replace(re, sub), text);
 }
