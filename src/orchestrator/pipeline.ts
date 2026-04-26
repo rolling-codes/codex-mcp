@@ -6,8 +6,8 @@ import { parseOutput, parseSubmit, type TaskInput, type TaskOutput } from "../va
 
 export function startPipeline(input: TaskInput): string {
   const prior = recall(input.task);
-  const ctx = buildCtx(input.task, input.context, prior);
-  return sanitize(buildPipelinePrompt(input.task, ctx, prior));
+  const ctx = buildCtx(input.context, prior);
+  return buildPipelinePrompt(input.task, ctx);
 }
 
 export function finalizePipeline(raw: unknown): TaskOutput {

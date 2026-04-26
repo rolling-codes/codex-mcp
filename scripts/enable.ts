@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execFileSync } from "child_process";
 import { resolve, join } from "path";
 import { existsSync } from "fs";
 
@@ -12,10 +12,12 @@ if (!existsSync(DIST)) {
 
 const ghostMode = process.env.GHOST_MODE ?? "false";
 
-const cmd = `claude mcp add -s user -e GHOST_MODE=${ghostMode} -- codex-mcp node "${DIST}"`;
-
 try {
-  execSync(cmd, { stdio: "inherit" });
+  execFileSync(
+    "claude",
+    ["mcp", "add", "-s", "user", "-e", `GHOST_MODE=${ghostMode}`, "--", "codex-mcp", "node", DIST],
+    { stdio: "inherit" }
+  );
   console.log("codex-mcp enabled — restart Claude Code to activate");
 } catch {
   console.error("Failed. Is Claude Code CLI installed and in PATH?");

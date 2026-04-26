@@ -8,7 +8,10 @@ export const InputSchema = z.object({
 export const SubmitSchema = z.object({
   task: z.string().min(1),
   result: z.string().min(1),
-  tests: z.string().min(1),
+  tests: z.string().min(1).refine(
+    (s) => /^(PASS|FAIL)/i.test(s.trimStart()),
+    { message: "tests must start with PASS or FAIL" }
+  ),
   summary: z.string().max(1000),
 });
 

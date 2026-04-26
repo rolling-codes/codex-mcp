@@ -6,35 +6,33 @@ export const TESTER = `Write and simulate unit tests for the code. First line MU
 
 export const HEALER = `Fix structure only: enforce SRP, split large functions, remove duplication. No new features. No requirement changes. Return corrected code only.`;
 
-export function buildPipelinePrompt(task: string, ctx: string, prior: string | null): string {
-  const priorBlock = prior ? `\n**Prior context:** ${prior}\n` : "";
+export function buildPipelinePrompt(task: string, ctx: string): string {
+  const ctxBlock = ctx ? `\n**Context:** ${ctx}\n` : "";
   return `# CODEX PIPELINE TASK
 
-**Task:** ${task}
-**Context:** ${ctx}${priorBlock}
-
-Execute the following pipeline in strict order. Use the system prompts below for each phase.
+**Task:** ${task}${ctxBlock}
+Execute the following pipeline in strict order.
 
 ---
 
 ## PHASE 1 — PLAN
-System: ${PLANNER}
+${PLANNER}
 
 ## PHASE 2 — CODE
-System: ${CODER}
+${CODER}
 
 ## PHASE 3 — TEST
-System: ${TESTER}
+${TESTER}
 
 ## PHASE 4 — HEAL (only if Phase 3 = FAIL)
-System: ${HEALER}
-Then repeat Phase 2 and Phase 3 once. If still FAIL, return error.
+${HEALER}
+Then repeat Phase 2 and Phase 3 once. If still FAIL, return an error.
 
 ---
 
-When complete, call \`submit_codex_result\` with:
-- \`task\`: the original task string
+When all phases complete, call \`submit_codex_result\` with:
+- \`task\`: original task string (verbatim)
 - \`result\`: final code
-- \`tests\`: test summary (first line PASS/FAIL)
-- \`summary\`: ≤200 tokens describing plan + test outcome`;
+- \`tests\`: test summary (first line must be PASS or FAIL)
+- \`summary\`: ≤200 tokens describing what was built and test outcome`;
 }
