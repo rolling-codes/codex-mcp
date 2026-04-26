@@ -10,13 +10,14 @@ if (!existsSync(DIST)) {
   process.exit(1);
 }
 
-const ghostMode = process.env.GHOST_MODE ?? "false";
+const ghostMode = process.env["GHOST_MODE"] ?? "false";
+const isWin = process.platform === "win32";
 
 try {
   execFileSync(
     "claude",
     ["mcp", "add", "-s", "user", "-e", `GHOST_MODE=${ghostMode}`, "--", "codex-mcp", "node", DIST],
-    { stdio: "inherit" }
+    { stdio: "inherit", shell: isWin }
   );
   console.log("codex-mcp enabled — restart Claude Code to activate");
 } catch {

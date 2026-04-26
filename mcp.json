@@ -1,9 +1,9 @@
 {
+  "_comment": "Template only. Run 'npm run enable' or 'npm run setup' to install with absolute paths. If using manually, replace ABSOLUTE_PATH below.",
   "mcpServers": {
     "codex-mcp": {
       "command": "node",
-      "args": ["dist/index.js"],
-      "cwd": ".",
+      "args": ["ABSOLUTE_PATH/codex-mcp/dist/index.js"],
       "env": {
         "GHOST_MODE": "false"
       }

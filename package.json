@@ -11,11 +11,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "setup": "npm run build && node_modules/.bin/tsx scripts/setup.ts",
-    "enable": "node_modules/.bin/tsx scripts/enable.ts",
+    "setup": "npm run build && tsx scripts/setup.ts",
+    "enable": "npm run build && tsx scripts/enable.ts",
     "disable": "claude mcp remove codex-mcp -s user",
     "prepublishOnly": "npm run build"
   },
