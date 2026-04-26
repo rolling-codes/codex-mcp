@@ -5,7 +5,6 @@
       "args": ["dist/index.js"],
       "cwd": ".",
       "env": {
-        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
         "GHOST_MODE": "false"
       }
     }

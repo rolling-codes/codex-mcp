@@ -1,7 +1,7 @@
 {
   "name": "codex-mcp",
-  "version": "1.0.0",
-  "description": "Local MCP server for automated code execution and validation.",
+  "version": "2.0.0",
+  "description": "Claude Code MCP plugin — multi-agent code execution using your existing Claude session. No separate API key required.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -17,14 +17,13 @@
     "setup": "npm run build && node_modules/.bin/tsx scripts/setup.ts",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["mcp", "claude", "codex", "ai", "code-generation"],
+  "keywords": ["mcp", "claude", "claude-code", "codex", "ai", "code-generation"],
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/YOUR_USERNAME/codex-mcp"
+    "url": "https://github.com/rolling-codes/codex-mcp"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.39.0",
     "@modelcontextprotocol/sdk": "^1.10.2",
     "zod": "^3.23.8"
   },
